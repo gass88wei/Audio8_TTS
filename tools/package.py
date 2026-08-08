@@ -35,7 +35,7 @@ def resolve_version() -> str:
 
 def copy_tree_or_file(src: Path, dst: Path) -> None:
     if src.is_dir():
-        shutil.copytree(src, dst)
+        shutil.copytree(src, dst, dirs_exist_ok=True)
     else:
         shutil.copy2(src, dst)
 
