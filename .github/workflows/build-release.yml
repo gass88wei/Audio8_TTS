@@ -40,8 +40,12 @@ jobs:
       - name: Static check
         run: python -m compileall -q onnx_runtime pack tools tests
 
-      - name: TUI import smoke
-        run: python -c "import sys; sys.path.insert(0, 'pack'); import tui_app; print('TUI OK')"
+      - name: TUI import smoke (simulate packaged layout)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Junction -Path pack/runtime -Target $PWD/onnx_runtime | Out-Null
+          python -c "import sys; sys.path.insert(0, 'pack'); import tui_app; print('TUI OK')"
+          Remove-Item pack/runtime
 
       - name: Download model (full, incl. registration encoder)
         run: |
