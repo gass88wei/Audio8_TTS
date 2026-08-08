@@ -33,9 +33,16 @@ def resolve_version() -> str:
     return "0.1.0"
 
 
+def ignore_junk(directory: str, names: list[str]) -> list[str]:
+    skipped = [n for n in names if n == "__pycache__"]
+    if Path(directory).name == "model":
+        skipped += [n for n in names if n in MODEL_EXCLUDES]
+    return skipped
+
+
 def copy_tree_or_file(src: Path, dst: Path) -> None:
     if src.is_dir():
-        shutil.copytree(src, dst, dirs_exist_ok=True)
+        shutil.copytree(src, dst, dirs_exist_ok=True, ignore=ignore_junk)
     else:
         shutil.copy2(src, dst)
 
