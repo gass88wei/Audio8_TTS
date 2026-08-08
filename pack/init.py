@@ -18,12 +18,32 @@ REPO_ID = "Audio8/Audio8-TTS-Preview-0.6B-ONNX-INT4"
 MANIFEST = "runtime_manifest.json"
 
 
+REQUIRED_IMPORTS = [
+    "numpy",
+    "onnxruntime",
+    "soundfile",
+    "scipy",
+    "tokenizers",
+    "huggingface_hub",
+    "textual",
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "multipart",
+]
+
+
 def need_pip_install() -> bool:
-    try:
-        import numpy  # noqa: F401
-        import onnxruntime  # noqa: F401
-        import soundfile  # noqa: F401
-    except ImportError:
+    import importlib
+
+    missing = []
+    for name in REQUIRED_IMPORTS:
+        try:
+            importlib.import_module(name)
+        except ImportError:
+            missing.append(name)
+    if missing:
+        print(f"[1/2] 缺少依赖: {', '.join(missing)}")
         return True
     return False
 
