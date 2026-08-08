@@ -1,0 +1,72 @@
+name: build-release
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-release
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            onnx_runtime/requirements.txt
+            pack/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r onnx_runtime/requirements.txt
+          pip install -r pack/requirements.txt
+
+      - name: Static check
+        run: python -m compileall -q onnx_runtime pack tools tests
+
+      - name: TUI import smoke
+        run: python -c "import sys; sys.path.insert(0, 'pack'); import tui_app; print('TUI OK')"
+
+      - name: Download model (full, incl. registration encoder)
+        run: |
+          pip install -U "huggingface_hub[cli]"
+          hf download Audio8/Audio8-TTS-Preview-0.6B-ONNX-INT4 --local-dir onnx_runtime/model
+
+      - name: Smoke test (real synthesis on CI)
+        run: python tests/smoke_ci.py
+
+      - name: Package one-click bundle
+        run: python tools/package.py
+        env:
+          APP_VERSION: ${{ github.ref_name }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Audio8TTS-Win64
+          path: dist/*.zip
+          if-no-files-found: error
+
+      - name: Create Release (only on version tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true

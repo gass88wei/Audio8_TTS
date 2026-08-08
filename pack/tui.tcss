@@ -1,0 +1,61 @@
+.main-grid {
+    grid-size: 2 1;
+    grid-columns: 1fr 2fr;
+    height: 1fr;
+}
+
+#voice-column {
+    border-right: solid $primary;
+    padding: 0 1;
+}
+
+.toolbar {
+    width: 100%;
+    margin-bottom: 1;
+}
+
+.section-title {
+    color: $accent;
+    bold: true;
+    margin: 1 0;
+}
+
+#text-area {
+    height: 30%;
+    border: round $primary;
+}
+
+#param-panel {
+    height: 8;
+}
+
+.param {
+    width: 100%;
+    margin: 0 0 1 0;
+}
+
+.action-row {
+    height: 3;
+    align: left middle;
+    margin: 1 0;
+}
+
+#log-view {
+    height: 1fr;
+    border: round $secondary;
+}
+
+#modal-title {
+    padding: 1 2;
+    bold: true;
+}
+
+.reg-in {
+    margin: 0 2 1 2;
+}
+
+.reg-btns {
+    margin: 1 2;
+    width: 40%;
+    align: left middle;
+}
