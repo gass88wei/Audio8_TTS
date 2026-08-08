@@ -24,8 +24,11 @@ class VoiceRegistration:
     def __init__(self, model_dir: Path, voices_root: Path, model_fingerprint: str):
         self.root = model_dir.resolve()
         self.voices_root = voices_root.resolve()
-        self.encoder_path = self.root / "codec_encoder_fp16.onnx"
-        self.manifest_path = self.root / "registration_manifest.json"
+        self.encoder_path = self.root / "registration" / "codec_encoder_fp16.onnx"
+        self.manifest_path = self.root / "registration" / "registration_manifest.json"
+        if not (self.encoder_path.is_file() and self.manifest_path.is_file()):
+            self.encoder_path = self.root / "codec_encoder_fp16.onnx"
+            self.manifest_path = self.root / "registration_manifest.json"
         self.expected_fingerprint = model_fingerprint
 
     def status(self) -> dict:
