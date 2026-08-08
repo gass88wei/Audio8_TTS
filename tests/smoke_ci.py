@@ -64,7 +64,6 @@ def main() -> None:
             voice="ci_voice",
             max_new_tokens=96,
             seed=42,
-            threads=4,
         )
         elapsed = time.time() - t0
         sample_rate = int(runtime.manifest["sample_rate"])
