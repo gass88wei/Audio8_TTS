@@ -7,4 +7,5 @@ uvicorn==0.42.0
 pydantic>=2.9,<3
 python-multipart==0.0.22
 huggingface_hub>=0.35
+tokenizers>=0.21,<1
 textual>=2.0,<3
